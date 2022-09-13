@@ -46,6 +46,8 @@ const config = JSON.parse(configFileAsString)
 
 const auth = GitHub.authenticate(ENV["GITHUB_AUTH"])
 
+sum = Dict()
+
 for repo in config["repos"]
     print("REPO: ", repo, "\n")
 
@@ -61,8 +63,12 @@ for repo in config["repos"]
         
         print("---------------------------------------\n")   
         for dev in enumerate(requests)
-            println(dev[2][1], " -> ", get(dev[2][2], yearAndMonth, 0))
+            val = get(dev[2][2], yearAndMonth, 0)
+            println(dev[2][1], " -> ", val)
+            get!(sum, dev[2][1], 0)
+            sum[dev[2][1]] += val
         end
-        print("---------------------------------------\n")   
+        print("---------------------------------------\n")
     end
 end
+println("Total : ", JSON.json(sum, 4))
